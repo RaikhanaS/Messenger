@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.protobuf:protobuf-java:3.25.1'
+    runtimeOnly 'com.google.protobuf:protobuf-java:3.25.1'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.25.1'
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {}
+            }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

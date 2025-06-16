@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "org.example.protobuf";
+option java_outer_classname = "MessageProto";
+
+message ChatMessage {
+  string from = 1;
+  string to = 2;
+  string message = 3;
+}
