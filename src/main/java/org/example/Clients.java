@@ -43,7 +43,6 @@ public class Clients {
     public void startListening() {
         new Thread(() -> {
             try {
-                System.out.println("Listening läuft...");
                 while (true) {
                     ChatMessage msg = ChatMessage.parseDelimitedFrom(in);
                     System.out.println("Nachricht empfangen!");
@@ -68,8 +67,13 @@ public class Clients {
         // Erzeuge Clients-Objekt
         Clients client = new Clients("localhost", 9797, username);
         client.login();
-        client.startListening(); // <-- Nachrichten empfangen!
+        client.startListening(); //  Nachrichten empfangen!
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         // Eingabe-Schleife zum Senden
         while (true) {
             System.out.print("An (Empfänger): ");

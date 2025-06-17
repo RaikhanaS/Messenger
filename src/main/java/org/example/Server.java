@@ -54,7 +54,8 @@ public class Server {
                         System.out.println("Gespeicherte Nachrichten für '" + username + "': " + queue.size());
                         while (!queue.isEmpty()) {
                             ChatMessage storedMsg = queue.poll();
-                            storedMsg.writeTo(out);
+                            storedMsg.writeDelimitedTo(out);
+                            out.flush();
                             System.out.println("Nachricht geliefert: " + storedMsg.getFrom() + " -> " + username + ": " + storedMsg.getMessage());
                         }
                         messageQueues.remove(username);
