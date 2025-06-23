@@ -7,17 +7,17 @@ import java.net.Socket;
 import java.util.*;
 
 public class Server {
-    private static final int PORT = 9797;
-    private static final Map<String, OutputStream> clients = new HashMap<>();
-    private static final Map<String, Queue<ChatMessage>> messageQueues = new HashMap<>();
+    private static final int PORT = 9797; //Der Server lauscht auf Port 9797
+    private static final Map<String, OutputStream> clients = new HashMap<>(); //Speichert für jeden angemeldeten Benutzernamen den zugehörigen OutputStream
+    private static final Map<String, Queue<ChatMessage>> messageQueues = new HashMap<>();//Warteschlange pro Benutzername
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(PORT);
         System.out.println("Server läuft auf Port " + PORT);
 
         while (true) {
-            Socket socket = serverSocket.accept();
-            new ClientHandler(socket).start();
+            Socket socket = serverSocket.accept(); //auf eingehende Verbindung wirt gewartet
+            new ClientHandler(socket).start(); // jede neue Verbindung ClientHandlerThread gestartet
         }
     }
 
@@ -29,7 +29,7 @@ public class Server {
 
         public ClientHandler(Socket socket) {
             this.socket = socket;
-        }
+        } //Thread pro Client (Speichert die Socket-Verbindung, die von main übergeben wurde)
 
         public void run() {
             System.out.println("ClientHandler gestartet!");
@@ -38,13 +38,13 @@ public class Server {
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
 
-                ChatMessage login = ChatMessage.parseDelimitedFrom(in);
+                ChatMessage login = ChatMessage.parseDelimitedFrom(in); //Der Client sendet zuerst eine Nachricht mit seinem username
                 username = login.getFrom().trim();  // Trimmt Leerzeichen
                 System.out.println(" Benutzer '" + username + "' meldet sich an.");
 
                 synchronized (clients) {
                     clients.put(username, out);
-                    System.out.println(" OutputStream gespeichert für '" + username + "'");
+                    System.out.println(" OutputStream gespeichert für '" + username + "'"); //Der OutputStream des Clients wird gespeichert, um Nachrichten an ihn senden zu können.
                 }
 
                 // Gespeicherte Nachrichten senden
@@ -63,10 +63,10 @@ public class Server {
                 }
 
                 while (true) {
-                    ChatMessage msg = ChatMessage.parseDelimitedFrom(in);
+                    ChatMessage msg = ChatMessage.parseDelimitedFrom(in); //Der Server liest dauerhaft neue Nachrichten vom Client ein.
                     System.out.println(" Neue Nachricht von " + msg.getFrom() + " an " + msg.getTo() + ": " + msg.getMessage());
 
-                    OutputStream recipientOut;
+                    OutputStream recipientOut; //Der Server prüft, ob der Empfänger online ist.
                     synchronized (clients) {
                         recipientOut = clients.get(msg.getTo().trim());
                         System.out.println(" Empfänger '" + msg.getTo() + "' gefunden? " + (recipientOut != null));

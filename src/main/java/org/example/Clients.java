@@ -40,6 +40,7 @@ public class Clients {
         out.flush();
     }
 
+    //Startet einen neuen Thread, der ständig in überwacht
     public void startListening() {
         new Thread(() -> {
             try {
@@ -67,7 +68,7 @@ public class Clients {
         // Erzeuge Clients-Objekt
         Clients client = new Clients("localhost", 9797, username);
         client.login();
-        client.startListening(); //  Nachrichten empfangen!
+        client.startListening();
 
         try {
             Thread.sleep(2000);

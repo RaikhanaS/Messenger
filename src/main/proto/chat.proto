@@ -8,3 +8,17 @@ message ChatMessage {
   string to = 2;
   string message = 3;
 }
+
+/*
+
+- Binäre Darstellung** wird erzeugt.
+- Jedes Feld (from, to, message) bekommt:
+    - einen **Tag** (Feldnummer aus `.proto`: 1, 2, 3)
+    - einen **Typ-Code** (z.B string = Typ 2)
+    - den **Wert** als Bytefolge
+
+    0A 04 41 6C 69 6E    // Tag 1 (from) + Länge 4 + Inhalt "Alin"
+    12 03 4D 61 78       // Tag 2 (to) + Länge 3 + Inhalt "Max"
+    1A 05 48 61 6C 6C 6F // Tag 3 (msg) + Länge 5 + Inhalt "Hallo"
+
+*/
