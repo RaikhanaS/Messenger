@@ -76,14 +76,20 @@ public class Clients {
             Thread.currentThread().interrupt();
         }
         // Eingabe-Schleife zum Senden
-        while (true) {
-            System.out.print("An (Empfänger): ");
-            String to = scanner.nextLine();
-            System.out.print("Nachricht: ");
-            String message = scanner.nextLine();
+        try {
+            while (true) {
+                System.out.print("An (Empfänger): ");
+                String to = scanner.nextLine();
+                System.out.print("Nachricht: ");
+                String message = scanner.nextLine();
 
-            client.sendMessage(to, message);
+                client.sendMessage(to, message);
+            }
+        } finally {
+            client.close();
+            System.out.println("Verbindung geschlossen.");
         }
+
     }
 
 

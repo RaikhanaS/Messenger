@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Server {
     private static final int PORT = 9797; //Der Server lauscht auf Port 9797
-    private static final Map<String, OutputStream> clients = new HashMap<>(); //Speichert für jeden angemeldeten Benutzernamen den zugehörigen OutputStream
+    private static final Map<String, OutputStream> clients = new HashMap<>();
     private static final Map<String, Queue<ChatMessage>> messageQueues = new HashMap<>();//Warteschlange pro Benutzername
 
     public static void main(String[] args) throws IOException {
@@ -16,8 +16,8 @@ public class Server {
         System.out.println("Server läuft auf Port " + PORT);
 
         while (true) {
-            Socket socket = serverSocket.accept(); //auf eingehende Verbindung wirt gewartet
-            new ClientHandler(socket).start(); // jede neue Verbindung ClientHandlerThread gestartet
+            Socket socket = serverSocket.accept(); //auf eingehende Verbindung wird gewartet
+            new ClientHandler(socket).start(); // jede neue Verbindung ClientHandler Thread gestartet
         }
     }
 
@@ -38,8 +38,8 @@ public class Server {
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
 
-                ChatMessage login = ChatMessage.parseDelimitedFrom(in); //Der Client sendet zuerst eine Nachricht mit seinem username
-                username = login.getFrom().trim();  // Trimmt Leerzeichen
+                ChatMessage login = ChatMessage.parseDelimitedFrom(in); //liest Nachricht aus einem Stream
+                username = login.getFrom().trim();
                 System.out.println(" Benutzer '" + username + "' meldet sich an.");
 
                 synchronized (clients) {
@@ -54,7 +54,7 @@ public class Server {
                         System.out.println("Gespeicherte Nachrichten für '" + username + "': " + queue.size());
                         while (!queue.isEmpty()) {
                             ChatMessage storedMsg = queue.poll();
-                            storedMsg.writeDelimitedTo(out);
+                            storedMsg.writeDelimitedTo(out); //serialisiert ein Protobuf-Objekt in eine binäre Bytefolge
                             out.flush();
                             System.out.println("Nachricht geliefert: " + storedMsg.getFrom() + " -> " + username + ": " + storedMsg.getMessage());
                         }
